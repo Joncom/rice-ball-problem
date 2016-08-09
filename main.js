@@ -1,10 +1,6 @@
-const readline = require('readline');
+var ask = 'enter space-separated rice ball sizes: ';
 
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
-
+// used to make output pretty
 indentation = 0;
 function indent() {
 	var output = '';
@@ -14,10 +10,28 @@ function indent() {
 	return output;
 }
 
-rl.question('enter space-separated rice ball sizes: ', function(sizes) {
+// running in node?
+if(typeof process !== 'undefined') {
+
+	const readline = require('readline');
+
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+	});
+
+	rl.question(ask, function(input) {
+		run(input);
+		rl.close();
+	});
+} else {
+	run(prompt(ask));
+}
+
+function run(input) {
 
 	// convert sizes string into an array of sizes
-	sizes = sizes.trim().split(' ');
+	var sizes = input.trim().split(' ');
 
 	// parse sizes from strings to integers
 	sizes = sizes.map(function(size) {
@@ -26,12 +40,9 @@ rl.question('enter space-separated rice ball sizes: ', function(sizes) {
 
 	solve(sizes);
 	//console.log(indent() + 'max size is ' + max_size);
-
-	rl.close();
-});
+}
 
 function solve(sizes) {
-	console.log('');
 	console.log(indent() + 'solving for ' + sizes);
 
 	var merges = get_merges(sizes);
@@ -63,7 +74,6 @@ function solve(sizes) {
 
 	// return the max size discovered
 	var max_size = Math.max.apply(null, max_sizes);
-	console.log('');
 	console.log(indent() + 'max size is ' + max_size);
 	return max_size;
 }
