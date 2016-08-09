@@ -9,12 +9,12 @@ indentation = 0;
 function indent() {
 	var output = '';
 	for(var i=0; i<indentation; i++) {
-		output += '  ';
+		output += '    ';
 	}
 	return output;
 }
 
-rl.question('Enter (space separated) rice ball sizes: ', function(sizes) {
+rl.question('enter space-separated rice ball sizes: ', function(sizes) {
 
 	// convert sizes string into an array of sizes
 	sizes = sizes.trim().split(' ');
@@ -24,14 +24,14 @@ rl.question('Enter (space separated) rice ball sizes: ', function(sizes) {
 		return parseInt(size);
 	});
 
-	console.log('');
-	var max_size = solve(sizes);
+	solve(sizes);
 	//console.log(indent() + 'max size is ' + max_size);
 
 	rl.close();
 });
 
 function solve(sizes) {
+	console.log('');
 	console.log(indent() + 'solving for ' + sizes);
 
 	var merges = get_merges(sizes);
@@ -53,7 +53,6 @@ function solve(sizes) {
 	// recursively check all possible merges
 	var max_sizes = [0];
 	for (var i = 0; i < merges.length; i++) {
-		console.log('');
 		var max_size = solve(merge(sizes, merges[i].index, merges[i].count));
 		max_sizes.push(max_size);
 	}
@@ -64,6 +63,7 @@ function solve(sizes) {
 
 	// return the max size discovered
 	var max_size = Math.max.apply(null, max_sizes);
+	console.log('');
 	console.log(indent() + 'max size is ' + max_size);
 	return max_size;
 }
