@@ -30,7 +30,7 @@ if(typeof process !== 'undefined') {
 
 function run(input) {
 
-	// convert sizes string into an array of sizes
+	// convert input string into an array of sizes
 	var sizes = input.trim().split(' ');
 
 	// parse sizes from strings to integers
@@ -39,7 +39,6 @@ function run(input) {
 	});
 
 	solve(sizes);
-	//console.log(indent() + 'max size is ' + max_size);
 }
 
 function solve(sizes) {
@@ -64,6 +63,7 @@ function solve(sizes) {
 	// recursively check all possible merges
 	var max_sizes = [0];
 	for (var i = 0; i < merges.length; i++) {
+		console.log(indent() + 'merge #' + (i+1));
 		var max_size = solve(merge(sizes, merges[i].index, merges[i].count));
 		max_sizes.push(max_size);
 	}
@@ -92,8 +92,6 @@ function merge(sizes, index, count) {
 	// remove old sizes from the array, and
 	// insert the new merged size
 	new_sizes.splice(index, count, merged_size);
-
-	//console.log(indent() + sizes + ' became ' + new_sizes);
 
 	return new_sizes;
 }
