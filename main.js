@@ -5,33 +5,67 @@ const rl = readline.createInterface({
 	output: process.stdout
 });
 
+indentation = 0;
+function indent() {
+	var output = '';
+	for(var i=0; i<indentation; i++) {
+		output += '  ';
+	}
+	return output;
+}
+
 rl.question('Enter (space separated) rice ball sizes: ', function(sizes) {
-	sizes = sizes.split(' ');
+
+	// convert sizes string into an array of sizes
+	sizes = sizes.trim().split(' ');
+
+	// parse sizes from strings to integers
+	sizes = sizes.map(function(size) {
+		return parseInt(size);
+	});
+
+	console.log('');
 	var max_size = solve(sizes);
-	console.log('max size: ' + max_size);
+	//console.log(indent() + 'max size is ' + max_size);
+
 	rl.close();
 });
 
 function solve(sizes) {
+	console.log(indent() + 'solving for ' + sizes);
+
 	var merges = get_merges(sizes);
+	console.log(indent() + merges.length + ' possible merges');
 
 	// no more possible merges?
 	if(merges.length === 0) {
 
 		// we're done!!
-		// return max value in sizes array
-		return Math.max.apply(null, sizes);
+		var max_size = Math.max.apply(null, sizes);
+		console.log(indent() + 'max size is ' + max_size);
+		return max_size;
 	}
 
+	// we're going a level deeper
+	// indent for readability
+	indentation++;
+
 	// recursively check all possible merges
-	var max_sizes = [];
+	var max_sizes = [0];
 	for (var i = 0; i < merges.length; i++) {
+		console.log('');
 		var max_size = solve(merge(sizes, merges[i].index, merges[i].count));
 		max_sizes.push(max_size);
 	}
 
-	// return the max size that was discovered
-	return Math.max.apply(null, max_sizes);
+	// we're back!
+	// unindent for readability
+	indentation--;
+
+	// return the max size discovered
+	var max_size = Math.max.apply(null, max_sizes);
+	console.log(indent() + 'max size is ' + max_size);
+	return max_size;
 }
 
 function merge(sizes, index, count) {
@@ -42,10 +76,16 @@ function merge(sizes, index, count) {
 		merged_size += sizes[i];
 	}
 
-	// create new sizes array,
-	// remove old sizes from array,
-	// insert new size into array
-	return sizes.slice().splice(index, count, merged_size);
+	// copy the sizes array
+	var new_sizes = sizes.slice();
+
+	// remove old sizes from the array, and
+	// insert the new merged size
+	new_sizes.splice(index, count, merged_size);
+
+	//console.log(indent() + sizes + ' became ' + new_sizes);
+
+	return new_sizes;
 }
 
 function get_merges(sizes) {
